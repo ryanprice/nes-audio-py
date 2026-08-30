@@ -167,7 +167,7 @@ The browser playground needs no install, but ES modules will not load from
 `file://` — serve the folder:
 
 ```bash
-cd web && python -m http.server 8000     # then open localhost:8000
+cd docs && python -m http.server 8000     # then open localhost:8000
 ```
 
 Requires Python 3.10+, numpy and scipy.

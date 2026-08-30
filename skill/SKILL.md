@@ -110,7 +110,7 @@ far enough to be a new sound.
 
 ## Try it without installing
 
-`web/index.html` is a self-contained browser playground — the same chip ported
+`docs/index.html` is a self-contained browser playground — the same chip ported
 to JavaScript, with presets, live parameters and WAV export. It also prints the
 equivalent Python for whatever you dial in.
 
