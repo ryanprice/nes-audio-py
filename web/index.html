@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2A03 Playground</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Silkscreen&display=swap">
+<style>
+:root{
+  --paper:#e9e7e1; --card:#f8f7f4; --sunk:#deddd6;
+  --ink:#16191f; --muted:#6a707a; --line:#cfccc4;
+  --blue:#3558c8; --match:#3f8a52;
+  --shadow:0 1px 0 rgba(0,0,0,.05),0 2px 10px rgba(20,25,40,.06);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#101319; --card:#181c25; --sunk:#0b0e13;
+  --ink:#e4e7ee; --muted:#868d99; --line:#272d39;
+  --blue:#7d9cff; --match:#63b57e;
+  --shadow:0 1px 0 rgba(255,255,255,.03),0 2px 14px rgba(0,0,0,.4);
+}}
+:root[data-theme="dark"]{
+  --paper:#101319; --card:#181c25; --sunk:#0b0e13;
+  --ink:#e4e7ee; --muted:#868d99; --line:#272d39;
+  --blue:#7d9cff; --match:#63b57e;
+  --shadow:0 1px 0 rgba(255,255,255,.03),0 2px 14px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);margin:0;padding:30px 20px 70px;
+  font-family:Barlow,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:940px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.eyebrow{font-family:Silkscreen,monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--blue)}
+h1{font-family:"Barlow Condensed",Barlow,sans-serif;font-weight:700;
+  font-size:clamp(32px,5.5vw,46px);line-height:1.03;margin:6px 0 0;letter-spacing:-.01em}
+.lede{color:var(--muted);max-width:62ch;margin:10px 0 0}
+.lede b{color:var(--ink);font-weight:600}
+.lede a{color:var(--blue)}
+hr{height:1px;background:var(--line);border:0;margin:0}
+
+.presets{display:flex;gap:7px;flex-wrap:wrap}
+.presets button{font-family:"IBM Plex Mono",monospace;font-size:11.5px;
+  background:transparent;color:var(--muted);border:1px solid var(--line);
+  border-radius:99px;padding:6px 13px;cursor:pointer;transition:.12s}
+.presets button:hover{border-color:var(--blue);color:var(--blue)}
+.presets button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+.panel{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.box{background:var(--card);border:1px solid var(--line);border-radius:4px;
+  box-shadow:var(--shadow);padding:16px 18px}
+.box h2{font-family:Silkscreen,monospace;font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--blue);margin:0 0 14px;font-weight:400}
+.ctl{display:grid;grid-template-columns:96px 1fr 56px;gap:10px;align-items:center;
+  margin-bottom:11px}
+.ctl label{font-size:13.5px;color:var(--muted)}
+.ctl output{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink);
+  text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--blue)}
+select{width:100%;font-family:Barlow,sans-serif;font-size:13.5px;padding:5px 7px;
+  background:var(--sunk);color:var(--ink);border:1px solid var(--line);border-radius:3px}
+.ctl.wide{grid-template-columns:96px 1fr}
+.hint{font-size:12.5px;color:var(--muted);margin:2px 0 12px;grid-column:1/-1}
+.hint b{color:var(--ink);font-weight:600}
+
+canvas{width:100%;height:120px;display:block;background:var(--sunk);border-radius:3px}
+.row{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap}
+.act{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:transparent;
+  color:var(--ink);border:1px solid var(--line);border-radius:3px;padding:8px 15px;cursor:pointer;transition:.12s}
+.act:hover{border-color:var(--blue);color:var(--blue)}
+.act.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.act.primary:hover{opacity:.88;color:#fff}
+pre{background:var(--sunk);border:1px solid var(--line);border-radius:3px;
+  padding:13px 15px;overflow-x:auto;font-family:"IBM Plex Mono",monospace;
+  font-size:12px;line-height:1.6;margin:0;color:var(--ink)}
+.foot{color:var(--muted);font-size:13px;font-family:"IBM Plex Mono",monospace}
+.foot a{color:var(--blue)}
+section h3{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:21px;margin:0 0 7px}
+section p{margin:0 0 9px;color:var(--muted);max-width:66ch}
+section p b{color:var(--ink);font-weight:600}
+code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--sunk);
+  padding:1px 5px;border-radius:2px}
+@media (max-width:760px){.panel{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">nesaudio &middot; Ricoh 2A03</div>
+    <h1>NES sound, from the actual chip</h1>
+    <p class="lede">This runs the real 2A03 algorithm in your browser &mdash; duty
+      sequencers, the 15-bit noise shift register, the 32-step triangle, 4-bit
+      envelopes and the hardware's non-linear mixer, at the 1.789773&nbsp;MHz NTSC
+      clock. <b>No samples, no model.</b> Dial something in, then copy the Python
+      to do it at scale. <a href="https://github.com/ryanprice/nes-audio-py">Source on GitHub</a>.</p>
+  </header>
+  <hr>
+
+  <div class="presets" id="presets"></div>
+
+  <div class="panel">
+    <div class="box">
+      <h2>Voice</h2>
+      <div class="ctl wide"><label for="chan">Channel</label>
+        <select id="chan">
+          <option value="pulse">Pulse &mdash; square wave</option>
+          <option value="triangle">Triangle &mdash; bass</option>
+          <option value="noise">Noise &mdash; drums, impacts</option>
+        </select></div>
+
+      <div data-when="pulse">
+        <div class="ctl wide"><label for="duty">Duty</label>
+          <select id="duty">
+            <option value="0">12.5% &mdash; thin, spread</option>
+            <option value="1" selected>25%</option>
+            <option value="2">50% &mdash; strong fundamental</option>
+            <option value="3">75%</option>
+          </select></div>
+        <p class="hint">12.5% spreads energy over eight harmonics and thins the
+          body; 50% has a strong fundamental and <b>no second harmonic</b>.</p>
+      </div>
+
+      <div data-when="pulse triangle">
+        <div class="ctl"><label for="f0">Pitch start</label>
+          <input type="range" id="f0" min="40" max="3000" value="880" step="1">
+          <output id="f0v"></output></div>
+        <div class="ctl"><label for="f1">Pitch end</label>
+          <input type="range" id="f1" min="40" max="3000" value="880" step="1">
+          <output id="f1v"></output></div>
+      </div>
+
+      <div data-when="noise">
+        <div class="ctl"><label for="np">LFSR period</label>
+          <input type="range" id="np" min="0" max="15" value="6" step="1">
+          <output id="npv"></output></div>
+        <div class="ctl wide"><label for="nmode">Mode</label>
+          <select id="nmode">
+            <option value="0">White &mdash; 32767 steps</option>
+            <option value="1">Metallic &mdash; 93 steps</option>
+          </select></div>
+        <p class="hint">Only 16 pitches exist. Low index = bright hiss, high =
+          low rumble. <b>Metallic mode</b> is the short loop &mdash; pitched and ringing.</p>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2>Shape</h2>
+      <div class="ctl"><label for="len">Length</label>
+        <input type="range" id="len" min="0.05" max="2" value="0.4" step="0.01">
+        <output id="lenv"></output></div>
+      <div class="ctl"><label for="v0">Volume start</label>
+        <input type="range" id="v0" min="0" max="15" value="15" step="1">
+        <output id="v0v"></output></div>
+      <div class="ctl"><label for="v1">Volume end</label>
+        <input type="range" id="v1" min="0" max="15" value="0" step="1">
+        <output id="v1v"></output></div>
+      <div class="ctl"><label for="rt">Retrigger</label>
+        <input type="range" id="rt" min="0" max="12" value="0" step="1">
+        <output id="rtv"></output></div>
+      <p class="hint">Retrigger re-attacks the note every N video frames. This is
+        <b>the texture control</b> &mdash; a driver writes the registers 60 times a
+        second and the chip holds each value, and that staircase is most of what
+        makes chip audio sound alive. 0 turns it off.</p>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Output</h2>
+    <canvas id="wave" height="240"></canvas>
+    <div class="row">
+      <button class="act primary" id="play">&#9654; Play</button>
+      <button class="act" id="dl">Download WAV</button>
+      <button class="act" id="copy">Copy Python</button>
+      <span class="foot" id="stat" style="align-self:center"></span>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>The same thing in Python</h2>
+    <pre id="code"></pre>
+  </div>
+
+  <section>
+    <h3>Why this exists</h3>
+    <p>The 2A03 is five fixed voices with published arithmetic. A generative
+      audio model approximating it produces something listeners immediately hear
+      as <b>&ldquo;too digital&rdquo;</b>, and no amount of prompting fixes it &mdash;
+      the failure is structural. Running the real algorithm is correct by
+      construction, faster, and reproducible.</p>
+    <p>The Python library adds a tracker for music, analysers that recover
+      channel, pitch, tempo and key from existing chip audio, and the
+      verification checks. <code>pip install -e .</code> from the repo.</p>
+  </section>
+
+  <p class="foot">Built from <a href="https://www.nesdev.org/wiki/APU">nesdev.org/wiki/APU</a>
+    &middot; MIT licensed</p>
+</div>
+
+<script type="module">
+import * as apu from './apu.js';
+
+const $ = id => document.getElementById(id);
+const ids = ['chan','duty','f0','f1','np','nmode','len','v0','v1','rt'];
+let buf = null, ctx = null, src = null;
+
+const PRESETS = {
+  'Whistle':  {chan:'pulse', duty:0, f0:1900, f1:2500, len:0.45, v0:15, v1:0,  rt:0},
+  'Tackle':   {chan:'noise', np:6,  nmode:0,  len:0.25, v0:15, v1:0,  rt:0},
+  'Bass thud':{chan:'triangle', f0:74, f1:52, len:0.15, v0:15, v1:0,  rt:0},
+  'Beep':     {chan:'pulse', duty:3, f0:520,  f1:520,  len:0.25, v0:15, v1:0,  rt:0},
+  'Coin':     {chan:'pulse', duty:1, f0:988,  f1:1319, len:0.5,  v0:14, v1:0,  rt:0},
+  'Score run':{chan:'pulse', duty:1, f0:659,  f1:2000, len:0.8,  v0:15, v1:2,  rt:4},
+  'Crowd':    {chan:'noise', np:12, nmode:0,  len:1.2,  v0:9,  v1:7,  rt:3},
+  'Laser':    {chan:'pulse', duty:2, f0:2400, f1:180,  len:0.35, v0:15, v1:0,  rt:0},
+};
+
+function state(){
+  const s = {};
+  for (const id of ids) {
+    const el = $(id);
+    s[id] = el.type === 'range' ? parseFloat(el.value) : el.value;
+  }
+  s.duty = parseInt($('duty').value); s.nmode = parseInt($('nmode').value);
+  return s;
+}
+
+function build(s){
+  const hz = s.f0 === s.f1 ? s.f0 : [[0, s.f0], [1, s.f1]];
+  const vol = s.v0 === s.v1 ? s.v0 : [[0, s.v0], [1, s.v1]];
+  return n => {
+    if (s.chan === 'pulse')
+      return apu.mix(n, {p1: apu.pulse(n, hz, s.duty, vol, s.rt)});
+    if (s.chan === 'triangle')
+      return apu.mix(n, {tri: apu.triangle(n, hz, s.v0 > 0 ? 1 : 0)});
+    return apu.mix(n, {noi: apu.noise(n, s.np, vol, s.nmode)});
+  };
+}
+
+function pyCode(s){
+  const hz = s.f0 === s.f1 ? `${s.f0}` : `[(0, ${s.f0}), (1, ${s.f1})]`;
+  const vol = s.v0 === s.v1 ? `${s.v0}` : `[(0, ${s.v0}), (1, ${s.v1})]`;
+  let body;
+  if (s.chan === 'pulse') {
+    body = s.rt > 0
+      ? `    # retrigger every ${s.rt} frames -- build the table, don't curve it\n` +
+        `    F = int(${s.len} * 60.0988)\n` +
+        `    hz = np.linspace(${s.f0}, ${s.f1}, F)\n` +
+        `    env = np.array([15, 8, 5, 3, 2, 1, 1, 1])[:${s.rt}]\n` +
+        `    vol = np.resize(env, F) * np.linspace(1, ${(s.v1/Math.max(s.v0,1)).toFixed(2)}, F)\n` +
+        `    return a.mix(p1=a.seq_pulse(n, hz, vol, duty=${s.duty}), n=n)`
+      : `    return a.mix(p1=a.pulse(n, ${hz}, duty=${s.duty}, vol=${vol}), n=n)`;
+  } else if (s.chan === 'triangle') {
+    body = `    return a.mix(tri=a.triangle(n, ${hz}, vol=${s.v0 > 0 ? 1 : 0}), n=n)`;
+  } else {
+    body = `    return a.mix(noi=a.noise(n, period=${s.np}, vol=${vol}` +
+           `${s.nmode ? ', mode=1' : ''}), n=n)`;
+  }
+  return `import numpy as np\nfrom nesaudio import nes_apu as a\nfrom nesaudio.master_verify import write\n\n\ndef sound(n):\n${body}\n\n\nwrite("sound.wav", a.render(${s.len}, sound))`;
+}
+
+function draw(y){
+  const cv = $('wave'), dpr = devicePixelRatio || 1, w = cv.clientWidth, h = 120;
+  cv.width = w * dpr; cv.height = h * dpr;
+  const c = cv.getContext('2d'); c.setTransform(dpr,0,0,dpr,0,0); c.clearRect(0,0,w,h);
+  const css = getComputedStyle(document.documentElement);
+  c.strokeStyle = css.getPropertyValue('--line'); c.beginPath();
+  c.moveTo(0, h/2); c.lineTo(w, h/2); c.stroke();
+  c.fillStyle = css.getPropertyValue('--blue');
+  const cols = Math.min(w, 900), per = Math.floor(y.length / cols);
+  for (let i = 0; i < cols; i++) {
+    let mx = 0;
+    for (let k = 0; k < per; k++) mx = Math.max(mx, Math.abs(y[i*per+k] || 0));
+    const bh = Math.max(1, mx * (h - 10));
+    c.fillRect(i * (w/cols), h/2 - bh/2, Math.max(1, w/cols - 0.5), bh);
+  }
+}
+
+function regen(){
+  const s = state();
+  document.querySelectorAll('[data-when]').forEach(el=>{
+    el.hidden = !el.dataset.when.split(' ').includes(s.chan);
+  });
+  $('f0v').textContent = s.f0 + ' Hz'; $('f1v').textContent = s.f1 + ' Hz';
+  $('npv').textContent = s.np + ' (' + Math.round(apu.CPU/apu.NOISE_PERIOD[s.np]) + ' Hz)';
+  $('lenv').textContent = s.len.toFixed(2) + 's';
+  $('v0v').textContent = s.v0 + '/15'; $('v1v').textContent = s.v1 + '/15';
+  $('rtv').textContent = s.rt === 0 ? 'off' : 'every ' + s.rt + 'f';
+  const t0 = performance.now();
+  const y = apu.render(s.len, build(s));
+  buf = y;
+  draw(y);
+  $('stat').textContent = `${(y.length/apu.SR).toFixed(2)}s rendered in ${Math.round(performance.now()-t0)}ms`;
+  $('code').textContent = pyCode(s);
+}
+
+function play(){
+  ctx = ctx || new (window.AudioContext || window.webkitAudioContext)();
+  if (ctx.state === 'suspended') ctx.resume();
+  if (src) { try { src.stop(); } catch {} }
+  const ab = ctx.createBuffer(1, buf.length, apu.SR);
+  ab.copyToChannel(buf, 0);
+  src = ctx.createBufferSource(); src.buffer = ab;
+  src.connect(ctx.destination); src.start();
+}
+
+const pr = $('presets');
+Object.keys(PRESETS).forEach((name, i)=>{
+  const b = document.createElement('button');
+  b.textContent = name; b.setAttribute('aria-pressed', i === 0);
+  b.addEventListener('click', ()=>{
+    pr.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x===b));
+    const p = PRESETS[name];
+    for (const [k, v] of Object.entries(p)) if ($(k)) $(k).value = v;
+    regen(); play();
+  });
+  pr.appendChild(b);
+});
+
+ids.forEach(id=>$(id).addEventListener('input', regen));
+$('play').addEventListener('click', play);
+$('dl').addEventListener('click', ()=>{
+  const url = URL.createObjectURL(apu.toWav(buf));
+  const a = document.createElement('a');
+  a.href = url; a.download = 'nes-sound.wav'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+});
+$('copy').addEventListener('click', async ()=>{
+  try {
+    await navigator.clipboard.writeText($('code').textContent);
+    $('copy').textContent = 'Copied';
+    setTimeout(()=>$('copy').textContent = 'Copy Python', 1400);
+  } catch { $('stat').textContent = 'Select the code below and copy it manually.'; }
+});
+addEventListener('resize', ()=>buf && draw(buf));
+
+// start on the first preset
+Object.assign($('chan'), {value: PRESETS.Whistle.chan});
+for (const [k,v] of Object.entries(PRESETS.Whistle)) if ($(k)) $(k).value = v;
+regen();
+</script>
+</body>
+</html>

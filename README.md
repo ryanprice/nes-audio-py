@@ -17,6 +17,10 @@ audio = a.render(0.45, whistle)     # -> float array at 44.1 kHz
 
 No GPU, no model, no network. About a second per sound effect.
 
+**[Try it in the browser →](https://ryanprice.github.io/nes-audio-py/)** — the same
+chip ported to JavaScript, with presets, live parameters, WAV export, and the
+equivalent Python printed for whatever you dial in. Nothing to install.
+
 ## Why not just use a generative audio model
 
 Because the 2A03 is five fixed voices with published arithmetic. A diffusion
@@ -135,6 +139,19 @@ folding back as inharmonic tones.
 law, so audio peak-normalised to −1 dBFS lands on disk at −4. Silent, consistent,
 and invisible unless you measure it. `write()` uses an explicit unity-gain `pan`.
 
+## Use it from an agent
+
+`skill/` holds a [Claude Code](https://claude.com/claude-code) skill that teaches
+an agent this library *and* the traps that make chip audio come out wrong:
+
+```bash
+mkdir -p ~/.claude/skills/nes-audio && cp skill/SKILL.md ~/.claude/skills/nes-audio/
+```
+
+It then loads whenever you ask for NES, Famicom, 8-bit or chiptune audio — or
+when AI-generated retro audio comes back sounding "too digital", which is the
+situation it was written for.
+
 ## Install
 
 ```bash
@@ -144,6 +161,13 @@ pip install -e .
 
 python examples/effects.py    # six one-shots
 python examples/song.py       # eight bars of chip music
+```
+
+The browser playground needs no install, but ES modules will not load from
+`file://` — serve the folder:
+
+```bash
+cd web && python -m http.server 8000     # then open localhost:8000
 ```
 
 Requires Python 3.10+, numpy and scipy.
