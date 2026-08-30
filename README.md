@@ -1,5 +1,8 @@
 # nesaudio
 
+<img width="984" height="1264" alt="image" src="https://github.com/user-attachments/assets/25d478dd-85fa-47f9-a8ce-230ee30bd6a2" />
+
+
 A **Ricoh 2A03** — the NES sound chip — running in numpy. Not a chiptune
 *emulation* or a set of samples: the actual hardware algorithm, at the real
 1.789773 MHz NTSC clock, decimated to 44.1 kHz.
